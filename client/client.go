@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -55,11 +56,18 @@ func ConnectToServer() {
 
 	//dial the server, with the flag "server", to get a connection to it
 	log.Printf("client %s: Attempts to dial on port %s\n", *clientsName, *serverPort)
+
+	// conn, err := grpc.DialContext(context.Background(), "192.168.137.1:80", opts...)
+	//conn, err := grpc.Dial("172.20.10.3:80", opts...)
+	//conn, err := grpc.Dial(fmt.Sprintf("192.168.137.1:%s", *serverPort), opts...)
+	/* oprindelige: */
 	conn, err := grpc.Dial(fmt.Sprintf(":%s", *serverPort), opts...)
+	// fra Nadja:  conn, err := grpc.Dial(":9080", grpc.WithInsecure())
 	if err != nil {
 		log.Printf("Fail to Dial : %v", err)
 		return
 	}
+	//log.Printf("derp")
 
 	// makes a client from the server connection and saves the connection
 	// and prints rather or not the connection was is READY
@@ -70,8 +78,8 @@ func ConnectToServer() {
 
 func parseInput() {
 	reader := bufio.NewReader(os.Stdin)
-	//fmt.Println("Type the amount you wish to increment with here. Type 0 to get the current value")
-	fmt.Println("Do you want to know the current time? \n Y for yes and N for no")
+	fmt.Println("Type the amount you wish to increment with here. Type 0 to get the current value")
+	//fmt.Println("Do you want to know the current time? \n Y for yes and N for no")
 	fmt.Println("--------------------")
 
 	//Infinite loop to listen for clients input.
@@ -90,17 +98,16 @@ func parseInput() {
 			continue
 		}
 
-		/*
-			//Convert string to int64, return error if the int is larger than 32bit or not a number
-			val, err := strconv.ParseInt(input, 10, 64)
-			if err != nil {
-				if input == "hi" {
-					sayHi()
-				}
-				continue
+		//Convert string to int64, return error if the int is larger than 32bit or not a number
+		val, err := strconv.ParseInt(input, 10, 64)
+		if err != nil {
+			if input == "hi" {
+				sayHi()
 			}
-			incrementVal(val)*/
-		getTime(input)
+			continue
+		}
+		incrementVal(val)
+		//getTime(input)
 	}
 }
 
